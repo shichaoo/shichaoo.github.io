@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="ELK,Elasticsearch,Zen discovery,">
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="Live Today, Love Tomorrow.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="shichao">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="一、discovery模块discovery模块负责发现集群中的节点，以及选择主节点。 es是基于对等式网络（peer to peer，简称P2P又称点对点技术）的系统，节点直接相互通信，不存在单点故障的问题。所有主要的API操作（索引，删除，搜索）都不与主节点通信。主节点的职责是维护集群的全局状态，例如在节点加入或离开集群时，重新分配shard（分片）。每次更改群集状态时，群集中的其他节点都会知">
+<meta name="keywords" content="ELK,Elasticsearch,Zen discovery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zen discovery节点发现机制">
+<meta property="og:url" content="http://yoursite.com/2019/01/26/zendiscovery/index.html">
 <meta property="og:site_name" content="shichao">
-<meta property="og:description" content="Live Today, Love Tomorrow.">
+<meta property="og:description" content="一、discovery模块discovery模块负责发现集群中的节点，以及选择主节点。 es是基于对等式网络（peer to peer，简称P2P又称点对点技术）的系统，节点直接相互通信，不存在单点故障的问题。所有主要的API操作（索引，删除，搜索）都不与主节点通信。主节点的职责是维护集群的全局状态，例如在节点加入或离开集群时，重新分配shard（分片）。每次更改群集状态时，群集中的其他节点都会知">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-31T07:04:39.866Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="shichao">
-<meta name="twitter:description" content="Live Today, Love Tomorrow.">
+<meta name="twitter:title" content="Zen discovery节点发现机制">
+<meta name="twitter:description" content="一、discovery模块discovery模块负责发现集群中的节点，以及选择主节点。 es是基于对等式网络（peer to peer，简称P2P又称点对点技术）的系统，节点直接相互通信，不存在单点故障的问题。所有主要的API操作（索引，删除，搜索）都不与主节点通信。主节点的职责是维护集群的全局状态，例如在节点加入或离开集群时，重新分配shard（分片）。每次更改群集状态时，群集中的其他节点都会知">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/26/zendiscovery/">
 
 
 
 
 
-  <title>shichao</title>
+  <title>Zen discovery节点发现机制 | shichao</title>
   
 
 
@@ -152,8 +154,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -246,9 +247,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -278,9 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/26/zendiscovery/" itemprop="url">Zen discovery节点发现机制</a></h1>
+          <h1 class="post-title" itemprop="name headline">Zen discovery节点发现机制</h1>
         
 
         <div class="post-meta">
@@ -352,9 +351,7 @@
       
 
       
-        
-          
-            <h2 id="一、discovery模块"><a href="#一、discovery模块" class="headerlink" title="一、discovery模块"></a>一、discovery模块</h2><p>discovery模块负责发现集群中的节点，以及选择主节点。</p>
+        <h2 id="一、discovery模块"><a href="#一、discovery模块" class="headerlink" title="一、discovery模块"></a>一、discovery模块</h2><p>discovery模块负责发现集群中的节点，以及选择主节点。</p>
 <p>es是基于对等式网络（peer to peer，简称P2P又称点对点技术）的系统，节点直接相互通信，不存在单点故障的问题。所有主要的API操作（索引，删除，搜索）都不与主节点通信。主节点的职责是维护集群的全局状态，例如在节点加入或离开集群时，重新分配shard（分片）。每次更改群集状态时，群集中的其他节点都会知道状态。</p>
 <p>自动发现机制在目前版本(6.5.4)提供了四种选择</p>
 <ol>
@@ -409,8 +406,6 @@ discovery.zen.publish_timeout
 </code></pre><p>上述两个设置可通过API动态更改</p>
 <h3 id="8-No-master-block"><a href="#8-No-master-block" class="headerlink" title="8. No master block"></a>8. No master block</h3><p>通过配置discovery.zen.no_master_block参数，当集群中没有主节点<br>值为all：节点上的所有操作（即读取和写入）都将被拒绝。这也适用于api集群状态读取或写入操作，如get index设置，put映射和集群状态api。<br>值为write：（默认）写入操作将被拒绝。基于上一个已知的群集配置，读取操作将成功。这可能导致部分读取陈旧数据，因为该节点可能与群集的其余部分隔离。</p>
 
-          
-        
       
     </div>
     
@@ -425,164 +420,40 @@ discovery.zen.publish_timeout
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/24/elasticsearch-1/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shichao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="shichao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/24/elasticsearch-1/" itemprop="url">避免es集群脑裂</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-24T15:54:01+08:00">
-                2019-01-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/ELK/" rel="tag"># ELK</a>
           
-
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
           
-            
+            <a href="/tags/Zen-discovery/" rel="tag"># Zen discovery</a>
           
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="一、什么是裂脑"><a href="#一、什么是裂脑" class="headerlink" title="一、什么是裂脑"></a>一、什么是裂脑</h2><p>正常情况下，一个es集群中只有一个主节点，当主节点与集群中的其他部分节点无法正常通信时，这部分节点会认为主节点失效 并重新选举主节点。此时集群出现多个主节点，其他节点又分别加入了不同主节点的集群，这种情况称之为脑裂(Split Brains)。</p>
-<h2 id="二、导致集群裂脑的原因"><a href="#二、导致集群裂脑的原因" class="headerlink" title="二、导致集群裂脑的原因"></a>二、导致集群裂脑的原因</h2><p>1.节点负载：如果主节点既为master又为data，当工作节点的负载较大时，会导致主节点停止响应，因此部分节点会认为主节点失效并重新选举新的主节点；<br>2.网络问题：集群间的网络延迟导致部分节点访问不到主节点，认为主节点失效并重新选举新的主节点；<br>3.内存回收：JVM大规模回收时，也会导致es集群失去响应；</p>
-<h2 id="三、主节点选举机制"><a href="#三、主节点选举机制" class="headerlink" title="三、主节点选举机制"></a>三、主节点选举机制</h2><p>master节点选举机制见上一篇 <a href="https://shichaoo.github.io/2019/01/23/hello-world/" target="_blank" rel="noopener">master节点选举机制</a></p>
-<h2 id="四、如何避免集群脑裂"><a href="#四、如何避免集群脑裂" class="headerlink" title="四、如何避免集群脑裂"></a>四、如何避免集群脑裂</h2><p>针对上述可能导致集群脑裂的原因，可采用如下方法避免：<br>1.将master与data分离</p>
-<p>主节点（master）的主要负责集群操作相关的内容，如创建或删除索引，跟踪哪些节点是群集的一部分，决定哪些分片分配给哪些节点，并在节点之间移动分片以平衡整个集群。因此稳定的主节点对集群的健康是非常重要的。数据节点（data）主要是存储索引数据的节点，主要对文档进行增删改查操作，聚合操作等。数据节点对cpu，内存，io要求较高。索引数据和搜索查询等操作会占用大量的cpu，内存，io资源，为了确保一个集群的稳定，分离主节点和数据节点是一个比较好的选择。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#master node</span></span><br><span class="line">node.master = <span class="literal">true</span> </span><br><span class="line">node.data = <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#data node </span></span><br><span class="line">node.master = <span class="literal">false</span> </span><br><span class="line">node.data = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<p>2.配置参数discovery.zen.minimum_master_nodes<br>discovery.zen.minimum_master_nodes参数代表 master候选节点（node.master设置为true的节点||具有master资格的节点）的最小数量。如果一个节点看到的 master候选节点的数量低于此参数的值，则不会进行新的主节点选举。<br>此参数的默认值是1，官方的推荐值是(N/2)+1，其中N是master候选节点的数量。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discovery.zen.minimum_master_nodes: (N/2)+1</span><br></pre></td></tr></table></figure></p>
-<p>PS:如果使用 master 候选节点作为单播列表，只需要列出三个就可以了。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master1"</span>, <span class="string">"master2"</span>, <span class="string">"master3"</span>]</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/24/elasticsearch-1/" rel="next" title="避免es集群脑裂">
+                <i class="fa fa-chevron-left"></i> 避免es集群脑裂
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -592,10 +463,11 @@ discovery.zen.publish_timeout
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -603,6 +475,10 @@ discovery.zen.publish_timeout
 
 
           
+
+  
+
+
 
         </div>
         
@@ -623,8 +499,17 @@ discovery.zen.publish_timeout
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -702,6 +587,22 @@ discovery.zen.publish_timeout
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、discovery模块"><span class="nav-number">1.</span> <span class="nav-text">一、discovery模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Zen-discovery节点发现机制"><span class="nav-number">2.</span> <span class="nav-text">二、Zen discovery节点发现机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Ping"><span class="nav-number">2.0.1.</span> <span class="nav-text">1. Ping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Seed-nodes"><span class="nav-number">2.0.2.</span> <span class="nav-text">2. Seed nodes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Unicast-静态配置"><span class="nav-number">2.0.3.</span> <span class="nav-text">3. Unicast(静态配置)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-File-based-外部文件动态配置"><span class="nav-number">2.0.4.</span> <span class="nav-text">4. File-based(外部文件动态配置)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Master-Election主节点选举"><span class="nav-number">2.0.5.</span> <span class="nav-text">5. Master Election主节点选举</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Fault-Detection故障检测"><span class="nav-number">2.0.6.</span> <span class="nav-text">6. Fault Detection故障检测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Cluster-state-updates集群状态更新"><span class="nav-number">2.1.</span> <span class="nav-text">7. Cluster state updates集群状态更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-No-master-block"><span class="nav-number">2.2.</span> <span class="nav-text">8. No master block</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -841,6 +742,10 @@ discovery.zen.publish_timeout
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
