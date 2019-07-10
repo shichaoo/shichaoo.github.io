@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="ELK,ElasticSearch,">
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="Live Today, Love Tomorrow.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="shichao">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="一、什么是裂脑正常情况下，一个es集群中只有一个主节点，当主节点与集群中的其他部分节点无法正常通信时，这部分节点会认为主节点失效 并重新选举主节点。此时集群出现多个主节点，其他节点又分别加入了不同主节点的集群，这种情况称之为脑裂(Split Brains)。 二、导致集群裂脑的原因1.节点负载：如果主节点既为master又为data，当工作节点的负载较大时，会导致主节点停止响应，因此部分节点会认为">
+<meta name="keywords" content="ELK,ElasticSearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="避免es集群脑裂">
+<meta property="og:url" content="http://yoursite.com/2019/01/24/aviod_split_brains/index.html">
 <meta property="og:site_name" content="shichao">
-<meta property="og:description" content="Live Today, Love Tomorrow.">
+<meta property="og:description" content="一、什么是裂脑正常情况下，一个es集群中只有一个主节点，当主节点与集群中的其他部分节点无法正常通信时，这部分节点会认为主节点失效 并重新选举主节点。此时集群出现多个主节点，其他节点又分别加入了不同主节点的集群，这种情况称之为脑裂(Split Brains)。 二、导致集群裂脑的原因1.节点负载：如果主节点既为master又为data，当工作节点的负载较大时，会导致主节点停止响应，因此部分节点会认为">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-31T07:08:03.933Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="shichao">
-<meta name="twitter:description" content="Live Today, Love Tomorrow.">
+<meta name="twitter:title" content="避免es集群脑裂">
+<meta name="twitter:description" content="一、什么是裂脑正常情况下，一个es集群中只有一个主节点，当主节点与集群中的其他部分节点无法正常通信时，这部分节点会认为主节点失效 并重新选举主节点。此时集群出现多个主节点，其他节点又分别加入了不同主节点的集群，这种情况称之为脑裂(Split Brains)。 二、导致集群裂脑的原因1.节点负载：如果主节点既为master又为data，当工作节点的负载较大时，会导致主节点停止响应，因此部分节点会认为">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/24/aviod_split_brains/">
 
 
 
 
 
-  <title>shichao</title>
+  <title>避免es集群脑裂 | shichao</title>
   
 
 
@@ -152,8 +154,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -246,204 +247,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/26/zen_discovery/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shichao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="shichao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/26/zen_discovery/" itemprop="url">Zen discovery节点发现机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-26T15:54:01+08:00">
-                2019-01-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="一、discovery模块"><a href="#一、discovery模块" class="headerlink" title="一、discovery模块"></a>一、discovery模块</h2><p>discovery模块负责发现集群中的节点，以及选择主节点。</p>
-<p>es是基于对等式网络（peer to peer，简称P2P又称点对点技术）的系统，节点直接相互通信，不存在单点故障的问题。所有主要的API操作（索引，删除，搜索）都不与主节点通信。主节点的职责是维护集群的全局状态，例如在节点加入或离开集群时，重新分配shard（分片）。每次更改群集状态时，群集中的其他节点都会知道状态。</p>
-<p>自动发现机制在目前版本(6.5.4)提供了四种选择</p>
-<ol>
-<li>Azure classic discovery 插件方式,使用Azure Classic API执行自动发现（类似于多播）</li>
-<li>EC2 discovery 插件方式,用AWS API进行单播发现</li>
-<li>Google Compute Engine (GCE)discovery 插件方式,GCE API执行自动发现（类似于多播）</li>
-<li>Zen discovery 内置默认模块 单播/基于文件</li>
-</ol>
-<h2 id="二、Zen-discovery节点发现机制"><a href="#二、Zen-discovery节点发现机制" class="headerlink" title="二、Zen discovery节点发现机制"></a>二、Zen discovery节点发现机制</h2><p>Zen discovery是Elasticsearch的内置默认发现模块。它提供单播和基于文件的discovery，并且可以扩展为通过插件支持云环境和其他形式的discovery。<br>Zen discovery与其他模块集成，例如，节点之间的所有通信都使用transport模块完成。<br>它分为如下几个子模块：</p>
-<h4 id="1-Ping"><a href="#1-Ping" class="headerlink" title="1. Ping"></a>1. Ping</h4><p>这是节点使用发现机制查找其他节点的过程。</p>
-<h4 id="2-Seed-nodes"><a href="#2-Seed-nodes" class="headerlink" title="2. Seed nodes"></a>2. Seed nodes</h4><p>Zen discovery使用Seed nodes候选节点列表来启动discovery的过程。在启动时，或者在选择新master节点时，Elasticsearch会尝试连接到其列表中的每个候选节点，以查找群集中的所有节点。默认情况下，有两种方法可用于配置候选节点列表：单播 和基于文件。建议Seed nodes列表包含群集中符合主节点的节点列表。</p>
-<h4 id="3-Unicast-静态配置"><a href="#3-Unicast-静态配置" class="headerlink" title="3. Unicast(静态配置)"></a>3. Unicast(静态配置)</h4><p>使用discovery.zen.ping.unicast.hosts静态配置来设置主机列表。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master1"</span>, <span class="string">"master2"</span>, <span class="string">"master3"</span>]</span><br></pre></td></tr></table></figure></p>
-<p>注意：<br>1）主机可以指定为主机名或IP地址，指定为主机名的主机在每轮ping操作期间会解析为IP地址。<br>2）IPv6主机必须置于括号内，如[::1]<br>3）discovery.zen.ping.unicast.resolve_timeout：在每轮ping操作中等待DNS查找的时间，默认为5秒。<br>4）如果DNS解析随时间变化，需要调整JVM安全设置-&gt;DNS缓存设置-&gt;es.networkaddress.cache</p>
-<h4 id="4-File-based-外部文件动态配置"><a href="#4-File-based-外部文件动态配置" class="headerlink" title="4. File-based(外部文件动态配置)"></a>4. File-based(外部文件动态配置)</h4><p>除了静态的unicast配置之外，还可以通过外部文件提供主机列表。在文件更改时，es会重新加载此文件，以便动态更改候选节点列表，无需重新启动每个节点,具体步骤如下：<br>1）在elasticsearch.yml中增加外部文件配置</p>
-<pre><code class="bash">discovery.zen.hosts_provider: file
-</code></pre>
-<p>2）创建外部文件</p>
-<pre><code class="bash"><span class="variable">$ES_PATH_CONF</span>/unicast_hosts.txt
-</code></pre>
-<p>3）外部文件中增加节点条目</p>
-<pre><code class="bash"><span class="comment">#不指定端口则为默认9300端口</span>
-10.10.10.5  
-10.10.10.6:9305
-10.10.10.5:10005
-<span class="comment"># an IPv6 address</span>
-[2001:0db8:85a3:0000:0000:8a2e:0370:7334]:9301
-</code></pre>
-<h4 id="5-Master-Election主节点选举"><a href="#5-Master-Election主节点选举" class="headerlink" title="5. Master Election主节点选举"></a>5. Master Election主节点选举</h4><p>作为ping过程的一部分，群集的候选节点要么被选举要么加入集群，以下为与主节点选举相关的配置项，具体选举原理参考<a href="https://shichaoo.github.io/2019/01/23/hello-world/" target="_blank" rel="noopener">master节点选举机制</a></p>
-<pre><code class="bash"><span class="comment">#节点开始选举或加入现有的群集的超时时间,默认为3s,如果超时后无法做出决定,则ping操作将重新开始</span>
-discovery.zen.ping_timeout: 
-<span class="comment">#一旦节点决定加入现有的已形成集群,它就会向主服务器发送加入请求,超时默认为ping超时的20倍</span>
-discovery.zen.join_timeout: 
-<span class="comment">#主节点选举时忽略非候选节点的ping（默认为false不忽略）</span>
-discovery.zen.master_election.ignore_non_master_pings: <span class="literal">true</span>
-<span class="comment">#最小候选节点数量</span>
-discovery.zen.minimum_master_nodes: (master_eligible_nodes / 2) + 1
-</code></pre>
-<h4 id="6-Fault-Detection故障检测"><a href="#6-Fault-Detection故障检测" class="headerlink" title="6. Fault Detection故障检测"></a>6. Fault Detection故障检测</h4><p>主节点ping集群中的所有其他节点并验证它们是否处于活动状态<br>每个节点ping到主节点以验证其是否仍然存在或者需要启动选举过程</p>
-<pre><code class="bash"><span class="comment">#节点被ping的频率，默认为1s。</span>
-ping_interval
-<span class="comment">#等待ping响应的时间，默认为30s。</span>
-ping_timeout
-<span class="comment">#超时多少次认为节点失效，默认为3</span>
-ping_retries
-</code></pre>
-<h3 id="7-Cluster-state-updates集群状态更新"><a href="#7-Cluster-state-updates集群状态更新" class="headerlink" title="7. Cluster state updates集群状态更新"></a>7. Cluster state updates集群状态更新</h3><p>主节点是群集中唯一可以更改群集状态的节点，主节点在修改集群状态之前，需要将修改发布给候选节点，当回复确认的节点数达到最小候选节点数，则集群状态才会修改。</p>
-<pre><code>#等待候选节点响应的超时时间，默认为30秒
-discovery.zen.commit_timeout
-</code></pre><p>一旦足够的节点响应，就会提交集群状态，并将消息发送到所有节点。在继续处理队列中的下一个状态更新之前，主节点等待所有节点响应，直到超时。</p>
-<pre><code>#等待所有节点响应的超时时间，默认为30秒
-discovery.zen.publish_timeout
-</code></pre><p>上述两个设置可通过API动态更改</p>
-<h3 id="8-No-master-block"><a href="#8-No-master-block" class="headerlink" title="8. No master block"></a>8. No master block</h3><p>通过配置discovery.zen.no_master_block参数，当集群中没有主节点<br>值为all：节点上的所有操作（即读取和写入）都将被拒绝。这也适用于api集群状态读取或写入操作，如get index设置，put映射和集群状态api。<br>值为write：（默认）写入操作将被拒绝。基于上一个已知的群集配置，读取操作将成功。这可能导致部分读取陈旧数据，因为该节点可能与群集的其余部分隔离。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
 
   
 
@@ -473,9 +279,7 @@ discovery.zen.publish_timeout
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/24/aviod_split_brains/" itemprop="url">避免es集群脑裂</a></h1>
+          <h1 class="post-title" itemprop="name headline">避免es集群脑裂</h1>
         
 
         <div class="post-meta">
@@ -547,9 +351,7 @@ discovery.zen.publish_timeout
       
 
       
-        
-          
-            <h2 id="一、什么是裂脑"><a href="#一、什么是裂脑" class="headerlink" title="一、什么是裂脑"></a>一、什么是裂脑</h2><p>正常情况下，一个es集群中只有一个主节点，当主节点与集群中的其他部分节点无法正常通信时，这部分节点会认为主节点失效 并重新选举主节点。此时集群出现多个主节点，其他节点又分别加入了不同主节点的集群，这种情况称之为脑裂(Split Brains)。</p>
+        <h2 id="一、什么是裂脑"><a href="#一、什么是裂脑" class="headerlink" title="一、什么是裂脑"></a>一、什么是裂脑</h2><p>正常情况下，一个es集群中只有一个主节点，当主节点与集群中的其他部分节点无法正常通信时，这部分节点会认为主节点失效 并重新选举主节点。此时集群出现多个主节点，其他节点又分别加入了不同主节点的集群，这种情况称之为脑裂(Split Brains)。</p>
 <h2 id="二、导致集群裂脑的原因"><a href="#二、导致集群裂脑的原因" class="headerlink" title="二、导致集群裂脑的原因"></a>二、导致集群裂脑的原因</h2><p>1.节点负载：如果主节点既为master又为data，当工作节点的负载较大时，会导致主节点停止响应，因此部分节点会认为主节点失效并重新选举新的主节点；<br>2.网络问题：集群间的网络延迟导致部分节点访问不到主节点，认为主节点失效并重新选举新的主节点；<br>3.内存回收：JVM大规模回收时，也会导致es集群失去响应；</p>
 <h2 id="三、主节点选举机制"><a href="#三、主节点选举机制" class="headerlink" title="三、主节点选举机制"></a>三、主节点选举机制</h2><p>master节点选举机制见上一篇 <a href="https://shichaoo.github.io/2019/01/23/hello-world/" target="_blank" rel="noopener">master节点选举机制</a></p>
 <h2 id="四、如何避免集群脑裂"><a href="#四、如何避免集群脑裂" class="headerlink" title="四、如何避免集群脑裂"></a>四、如何避免集群脑裂</h2><p>针对上述可能导致集群脑裂的原因，可采用如下方法避免：<br>1.将master与data分离</p>
@@ -559,8 +361,6 @@ discovery.zen.publish_timeout
 <p>2.配置参数discovery.zen.minimum_master_nodes<br>discovery.zen.minimum_master_nodes参数代表 master候选节点（node.master设置为true的节点||具有master资格的节点）的最小数量。如果一个节点看到的 master候选节点的数量低于此参数的值，则不会进行新的主节点选举。<br>此参数的默认值是1，官方的推荐值是(N/2)+1，其中N是master候选节点的数量。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discovery.zen.minimum_master_nodes: (N/2)+1</span><br></pre></td></tr></table></figure></p>
 <p>PS:如果使用 master 候选节点作为单播列表，只需要列出三个就可以了。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">discovery.zen.ping.unicast.hosts: [<span class="string">"master1"</span>, <span class="string">"master2"</span>, <span class="string">"master3"</span>]</span><br></pre></td></tr></table></figure></p>
 
-          
-        
       
     </div>
     
@@ -575,157 +375,42 @@ discovery.zen.publish_timeout
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/master_election/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="shichao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="shichao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/22/master_election/" itemprop="url">es集群master选举机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T15:08:23+08:00">
-                2019-01-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/ELK/" rel="tag"># ELK</a>
           
-
+            <a href="/tags/ElasticSearch/" rel="tag"># ElasticSearch</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>es集群中主节点必须唯一，分布式系统的master选举算法有很多，例如paxos算法、Bully算法等。es的master选举时会给每个节点赋予一唯一的ID，这些ID是可以排序的，每次master选举都会选举ID最大的节点。<br>1.每次选举时，每个节点都会根据nodeId对候选节点排序，然后对第0个节点投票。<br>2.如果某个候选节点的得票数达到设定的值，且该节点自己也选举自己，那这个节点就是master，否则重新选举。<br>3.对于brain split问题，需要把候选master节点最小值设置为可以成为master节点数n/2+1。</p>
-<p>通过比较节点能“看到”的候选master数量和配置的最小值来确定是否可以进行选举，如果数量不够会导致选举不能进行，这样就可以保证集群不会被分裂。<br>假设之前选举了A节点为master，两个switch之间突然断线了，这样就分成了两部分。CDE和AB，因为 minimumMasterNodes的数目为3（集群中5个节点都可以成为master，3=5/2+1），因此cde会可以进行选举假设C成为master。AB两个节点因为少于3所以无法选举，只能一直寻求加入集群，要么线路连通加入到CDE中要么就一直处于寻找集群状态，这样就保证了集群不分裂。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/22/master_election/" rel="next" title="es集群master选举机制">
+                <i class="fa fa-chevron-left"></i> es集群master选举机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/26/zen_discovery/" rel="prev" title="Zen discovery节点发现机制">
+                Zen discovery节点发现机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -735,10 +420,11 @@ discovery.zen.publish_timeout
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -746,6 +432,10 @@ discovery.zen.publish_timeout
 
 
           
+
+  
+
+
 
         </div>
         
@@ -766,8 +456,17 @@ discovery.zen.publish_timeout
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -845,6 +544,22 @@ discovery.zen.publish_timeout
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、什么是裂脑"><span class="nav-number">1.</span> <span class="nav-text">一、什么是裂脑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、导致集群裂脑的原因"><span class="nav-number">2.</span> <span class="nav-text">二、导致集群裂脑的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、主节点选举机制"><span class="nav-number">3.</span> <span class="nav-text">三、主节点选举机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、如何避免集群脑裂"><span class="nav-number">4.</span> <span class="nav-text">四、如何避免集群脑裂</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -984,6 +699,10 @@ discovery.zen.publish_timeout
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
