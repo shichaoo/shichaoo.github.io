@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="ELK,Elasticsearch,Zen discovery,">
+  <meta name="keywords" content="hbase phoenix,">
 
 
 
@@ -79,18 +79,21 @@
 
 
 
-<meta name="description" content="es集群中主节点必须唯一，分布式系统的master选举算法有很多，例如paxos算法、Bully算法等。es的master选举时会给每个节点赋予一唯一的ID，这些ID是可以排序的，每次master选举都会选举ID最大的节点。1.每次选举时，每个节点都会根据nodeId对候选节点排序，然后对第0个节点投票。2.如果某个候选节点的得票数达到设定的值，且该节点自己也选举自己，那这个节点就是master，">
-<meta name="keywords" content="ELK,Elasticsearch,Zen discovery">
+<meta name="description" content="为什么需要用二级索引 在Hbase中，按字典顺序排序的rowkey是一级索引。如果不通过rowkey来查询数据，则需要过滤器来扫描整张表。对于数据量较大的表，全表扫描的代价是不可接受的。在复杂查询时需要查询过滤多个字段的值，要想把所有需要查询的字段的值都放到rowkey中几乎不可能（业务的灵活性不允许，对rowkey长度的要求也不允许）因此需要secondary index（二级索引）。Phoen">
+<meta name="keywords" content="hbase phoenix">
 <meta property="og:type" content="article">
-<meta property="og:title" content="es集群master选举机制">
-<meta property="og:url" content="http://yoursite.com/2019/01/22/master_election/index.html">
+<meta property="og:title" content="使用phoenix创建hbase二级索引">
+<meta property="og:url" content="http://yoursite.com/2019/11/22/hbase二级索引/index.html">
 <meta property="og:site_name" content="shichao">
-<meta property="og:description" content="es集群中主节点必须唯一，分布式系统的master选举算法有很多，例如paxos算法、Bully算法等。es的master选举时会给每个节点赋予一唯一的ID，这些ID是可以排序的，每次master选举都会选举ID最大的节点。1.每次选举时，每个节点都会根据nodeId对候选节点排序，然后对第0个节点投票。2.如果某个候选节点的得票数达到设定的值，且该节点自己也选举自己，那这个节点就是master，">
+<meta property="og:description" content="为什么需要用二级索引 在Hbase中，按字典顺序排序的rowkey是一级索引。如果不通过rowkey来查询数据，则需要过滤器来扫描整张表。对于数据量较大的表，全表扫描的代价是不可接受的。在复杂查询时需要查询过滤多个字段的值，要想把所有需要查询的字段的值都放到rowkey中几乎不可能（业务的灵活性不允许，对rowkey长度的要求也不允许）因此需要secondary index（二级索引）。Phoen">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-27T03:26:55.074Z">
+<meta property="og:image" content="http://118.190.244.112:9999/images/hbase配置.png">
+<meta property="og:image" content="http://118.190.244.112:9999/images/滚动升级.png">
+<meta property="og:updated_time" content="2019-11-28T03:12:43.498Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="es集群master选举机制">
-<meta name="twitter:description" content="es集群中主节点必须唯一，分布式系统的master选举算法有很多，例如paxos算法、Bully算法等。es的master选举时会给每个节点赋予一唯一的ID，这些ID是可以排序的，每次master选举都会选举ID最大的节点。1.每次选举时，每个节点都会根据nodeId对候选节点排序，然后对第0个节点投票。2.如果某个候选节点的得票数达到设定的值，且该节点自己也选举自己，那这个节点就是master，">
+<meta name="twitter:title" content="使用phoenix创建hbase二级索引">
+<meta name="twitter:description" content="为什么需要用二级索引 在Hbase中，按字典顺序排序的rowkey是一级索引。如果不通过rowkey来查询数据，则需要过滤器来扫描整张表。对于数据量较大的表，全表扫描的代价是不可接受的。在复杂查询时需要查询过滤多个字段的值，要想把所有需要查询的字段的值都放到rowkey中几乎不可能（业务的灵活性不允许，对rowkey长度的要求也不允许）因此需要secondary index（二级索引）。Phoen">
+<meta name="twitter:image" content="http://118.190.244.112:9999/images/hbase配置.png">
 
 
 
@@ -120,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/22/master_election/">
+  <link rel="canonical" href="http://yoursite.com/2019/11/22/hbase二级索引/">
 
 
 
 
 
-  <title>es集群master选举机制 | shichao</title>
+  <title>使用phoenix创建hbase二级索引 | shichao</title>
   
 
 
@@ -262,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/22/master_election/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/22/hbase二级索引/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="shichao">
@@ -279,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">es集群master选举机制</h1>
+          <h1 class="post-title" itemprop="name headline">使用phoenix创建hbase二级索引</h1>
         
 
         <div class="post-meta">
@@ -291,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-22T15:08:23+08:00">
-                2019-01-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-22T10:16:01+08:00">
+                2019-11-22
               </time>
             
 
@@ -314,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
                   </a>
                 </span>
 
@@ -351,8 +354,11 @@
       
 
       
-        <p>es集群中主节点必须唯一，分布式系统的master选举算法有很多，例如paxos算法、Bully算法等。es的master选举时会给每个节点赋予一唯一的ID，这些ID是可以排序的，每次master选举都会选举ID最大的节点。<br>1.每次选举时，每个节点都会根据nodeId对候选节点排序，然后对第0个节点投票。<br>2.如果某个候选节点的得票数达到设定的值，且该节点自己也选举自己，那这个节点就是master，否则重新选举。<br>3.对于brain split问题，需要把候选master节点最小值设置为可以成为master节点数n/2+1。</p>
-<p>通过比较节点能“看到”的候选master数量和配置的最小值来确定是否可以进行选举，如果数量不够会导致选举不能进行，这样就可以保证集群不会被分裂。<br>假设之前选举了A节点为master，两个switch之间突然断线了，这样就分成了两部分。CDE和AB，因为 minimumMasterNodes的数目为3（集群中5个节点都可以成为master，3=5/2+1），因此cde会可以进行选举假设C成为master。AB两个节点因为少于3所以无法选举，只能一直寻求加入集群，要么线路连通加入到CDE中要么就一直处于寻找集群状态，这样就保证了集群不分裂。</p>
+        <h4 id="为什么需要用二级索引"><a href="#为什么需要用二级索引" class="headerlink" title="为什么需要用二级索引"></a>为什么需要用二级索引</h4><p> 在Hbase中，按字典顺序排序的rowkey是一级索引。如果不通过rowkey来查询数据，则需要过滤器来扫描整张表。对于数据量较大的表，全表扫描的代价是不可接受的。在复杂查询时需要查询过滤多个字段的值，要想把所有需要查询的字段的值都放到rowkey中几乎不可能（业务的灵活性不允许，对rowkey长度的要求也不允许）因此需要secondary index（二级索引）。Phoenix提供了对HBase secondary index的支持。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.regionserver.wal.codec&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.region.server.rpc.scheduler.factory.class&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;org.apache.hadoop.hbase.ipc.PhoenixRpcSchedulerFactory&lt;/value&gt;</span><br><span class="line">  &lt;description&gt;Factory to create the Phoenix RPC Scheduler that uses separate queues <span class="keyword">for</span> index and metadata updates&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.rpc.controllerfactory.class&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;org.apache.hadoop.hbase.ipc.controller.ServerRpcControllerFactory&lt;/value&gt;</span><br><span class="line">  &lt;description&gt;Factory to create the Phoenix RPC Scheduler that uses separate queues <span class="keyword">for</span> index and metadata updates&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.coprocessor.regionserver.classes&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;org.apache.hadoop.hbase.regionserver.LocalIndexMerger&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">``` </span><br><span class="line">如果没有在每个regionserver上的hbase-site.xml里面配置如上属性，那么使用create index语句创建二级索引将会抛出如下异常：</span><br><span class="line">``` bash</span><br><span class="line">Error: ERROR 1029 (42Y88): Mutable secondary indexes must have the hbase.regionserver.wal.codec property <span class="built_in">set</span> to org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec <span class="keyword">in</span> the hbase-sites.xml of every region server tableName=TEST_INDEXES (state=42Y88,code=1029)</span><br></pre></td></tr></table></figure>
+<p>然后在每一个master的hbase-site.xml里加入如下属性：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.master.loadbalancer.class&lt;/name&gt;                                     </span><br><span class="line">  &lt;value&gt;org.apache.phoenix.hbase.index.balancer.IndexLoadBalancer&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;hbase.coprocessor.master.classes&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;org.apache.phoenix.hbase.index.master.IndexMasterObserver&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure></p>
+<p>配置master组及regionServer组，把对应主机加进去，然后根据组来配置。<br><img src="http://118.190.244.112:9999/images/hbase配置.png" alt="hbase配置"></p>
+<p>完成上述修改后重启hbase集群使配置生效（最好滚动升级）<br><img src="http://118.190.244.112:9999/images/滚动升级.png" alt="hbase滚动升级"></p>
 
       
     </div>
@@ -370,11 +376,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ELK/" rel="tag"># ELK</a>
-          
-            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
-          
-            <a href="/tags/Zen-discovery/" rel="tag"># Zen discovery</a>
+            <a href="/tags/hbase-phoenix/" rel="tag"># hbase phoenix</a>
           
         </div>
       
@@ -387,15 +389,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/11/14/http_tcp/" rel="next" title="TCP/IP协议">
+                <i class="fa fa-chevron-left"></i> TCP/IP协议
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/24/aviod_split_brains/" rel="prev" title="避免es集群脑裂">
-                避免es集群脑裂 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -447,8 +449,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -526,6 +537,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么需要用二级索引"><span class="nav-number">1.</span> <span class="nav-text">为什么需要用二级索引</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
